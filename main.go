@@ -14,6 +14,12 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 2 {
+		log.Fatalf("Usage: %s <path-to-firebase-credentials>", os.Args[0])
+	}
+
+	credentialsFilePath := os.Args[1]
+
 	url := "https://v6.exchangerate-api.com/v6/9d90a307165975a4b2958f79/pair/EUR/ILS"
 
 	// Make the HTTP GET request
@@ -40,12 +46,12 @@ func main() {
 	}
 
 	fmt.Println(result["conversion_rate"])
-	persist(result["conversion_rate"].(float64))
+	persist(result["conversion_rate"].(float64), credentialsFilePath)
 }
 
-func persist(rate float64) {
+func persist(rate float64, path string) {
 	ctx := context.Background()
-	opt := option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	opt := option.WithCredentialsFile(path)
 	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		log.Fatal(err)
