@@ -9,7 +9,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"rateSync/resources"
+	"os"
 	"time"
 )
 
@@ -45,11 +45,7 @@ func main() {
 
 func persist(rate float64) {
 	ctx := context.Background()
-	bytez, err := resources.EmbeddedFS.ReadFile("firestore/annual-report-52e9f-firebase.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	opt := option.WithCredentialsJSON(bytez)
+	opt := option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		log.Fatal(err)
